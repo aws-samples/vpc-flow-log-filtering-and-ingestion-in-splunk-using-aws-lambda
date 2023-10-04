@@ -22,12 +22,12 @@ We need to set up Splunk HEC to receive the data before we can configure the AWS
 
 1. Access Splunk Web, go to Settings and choose Data inputs. 
 2. Select HTTP Event Collector and then choose New Token. 
-3. Configure the new token and click Submit. 
+3. Configure the new token and click Submit. Ensure that the sourcetype is “aws:cloudwatchlogs:vpcflow”
 4. Once the Token has been created, choose Global Settings, ensure All Tokens have been enabled, and click Save.
 
 ## Splunk Configurations
 
-We need to add configurations within the Splunk server under props.conf to ensure that line breaking, time stamp and field extractions are configured correctly. Copy the contents below in props.conf in $SPLUNK_HOME/etc/system/local/. For more information regarding these configurations, refer the Splunk props.conf documentation.
+We need to add configurations within the Splunk server under props.conf to ensure that line breaking, time stamp and field extractions are configured correctly. Copy the contents below in props.conf in $SPLUNK_HOME/etc/system/local/. For more information regarding these configurations, refer the Splunk [props.conf documentation](https://docs.splunk.com/Documentation/Splunk/latest/Admin/Propsconf).
 
 [aws:cloudwatchlogs:vpcflow]  
 BREAK_ONLY_BEFORE_DATE = false  
@@ -40,10 +40,12 @@ NO_BINARY_CHECK=true
 KV_MODE = json  
 TIME_FORMAT = %s  
 TIME_PREFIX = ^(?>\S+\s){10}  
-MAX_TIMESTAMP_LOOKAHEAD = 10  
+MAX_TIMESTAMP_LOOKAHEAD = 10  #makes sure account_id is not used for timestamp  
+#Replace unrequired characters from the VPC Flow logs list with blank values  
 SEDCMD-A = s/\'//g  
 SEDCMD-B = s/\"|\,//g
 
+#Extraction of fields within VPC Flow log events    
 EXTRACT-vpcflowlog=^(?<version>2{1})\s+(?<account_id>[^\s]{7,12})\s+(?<interface_id>[^\s]+)\s+(?<src_ip>[^\s]+)\s+(?<dest_ip>[^\s]+)\s+(?<src_port>[^\s]+)\s+(?<dest_port>[^\s]+)\s+(?<protocol_code>[^\s]+)\s+(?P<packets>[^\s]+)\s+(?<bytes>[^\s]+)\s+(?<start_time>[^\s]+)\s+(?<end_time>[^\s]+)\s+(?<vpcflow_action>[^\s]+)\s+(?<log_status>[^\s]+)
 
 ## Create Amazon SQS to queue event notifications 
@@ -141,12 +143,12 @@ Let’s create a backsplash S3 bucket to ensure that no filtered data is lost, i
 4. Keep all the other settings as default and select Create function.
 5. Once the function is created, select the Configuration tab within the function and edit the General configuration. Change the Timeout value to 5 min and click Save.
 6. Next, edit the Environment variables and add these 3 key-value pairs. Make sure that you replace the placeholders in <> with the appropriate values based on your environment. Once the environment variables are added, click Save:  
-- backup_s3 = name of the backsplash S3 bucket created in the earlier section  
+- backup_s3 = name of the backsplash S3 bucket created in the earlier section
 - splunk_hec_token = <your_splunk_hec_token>  
 - splunk_hec_url = <your_splunk_url>:8088/services/collector/raw
 
 
-7. Select the Code tab within your Function and update the lambda_function.py with the code from GitLab repository here
+7. Select the Code tab within your Function and update the lambda_function.py with the code from GitHub repository here
 8. Access the Configuration tab within the function and select Triggers.
 9. Click Add trigger and select SQS from the dropdown.
 10. Under the SQS queue dropdown, select the SQS that we configured to store the S3 object-create event notifications.
@@ -156,7 +158,7 @@ Let’s create a backsplash S3 bucket to ensure that no filtered data is lost, i
 Once the Lambda function is created and the SQS trigger has been activated, the function immediately starts forwarding the VPC Flow logs to Splunk. 
 
 1. Open the Splunk console and navigate to the Search tab within the Searching and Reporting app.
-2. Run the following SPL query to view the ingested VPC Flow log records: 
+2. Run the following SPL query to view the ingested VPC Flow log records. Replace the placeholder in <> with the appropriate Splunk index name: 
 
 index = <insert_index_name> sourcetype = “aws:cloudwatchlogs:vpcflow”
 
