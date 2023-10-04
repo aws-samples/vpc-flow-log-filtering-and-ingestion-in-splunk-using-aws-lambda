@@ -166,13 +166,9 @@ index = <insert_index_name> sourcetype = “aws:cloudwatchlogs:vpcflow”
 
 This blog delved into how you can filter and ingest VPC flow logs into Splunk with the help of a Lambda function. VPC Flow logs was used as an example, but similar architectural pattern can be replicated for multiple log types stored in S3 buckets. The code example provides you with an extendable framework to ingest any AWS and non-AWS logs centralized in S3 into Splunk using the push-based mechanism. The filtering capability of the Lambda function can help you to ingest only the logs that you are interested in, thus helping to optimize costs by reducing the Splunk license utilization.
 
+## Notice
 
-
-
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
+This code interacts with Splunk which has terms published [here](https://www.splunk.com/en_us/legal/splunk-general-terms.html) and pricing described [here](https://www.splunk.com/en_us/products/pricing.html?utm_campaign=google_amer_en_search_brand&utm_source=google&utm_medium=cpc&utm_content=Splunk_Prod_Pricing_EN&utm_term=splunk%20pricing&_bk=splunk%20pricing&_bt=505717294225&_bm=e&_bn=g&_bg=43997963247&device=c&gclid=Cj0KCQjwmvSoBhDOARIsAK6aV7hdohCJwJNbtekZQuKF17FW_3zI3Pe4hfQKix-ScOusnmDRl1Zzs7gaAhwlEALw_wcB). You should be familiar with the pricing and confirm that your use case complies with the terms before proceeding.
 
 ## Security
 
