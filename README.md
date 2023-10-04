@@ -148,7 +148,7 @@ Let’s create a backsplash S3 bucket to ensure that no filtered data is lost, i
 - splunk_hec_url = <your_splunk_url>:8088/services/collector/raw
 
 
-7. Select the Code tab within your Function and update the lambda_function.py with the code from GitHub repository here
+7. Select the Code tab within your Function and update the lambda_function.py with the code from this GitHub repository [here](https://github.com/aws-samples/vpc-flow-log-filtering-and-ingestion-in-splunk-using-aws-lambda/blob/main/lambda_splunk_function.py)
 8. Access the Configuration tab within the function and select Triggers.
 9. Click Add trigger and select SQS from the dropdown.
 10. Under the SQS queue dropdown, select the SQS that we configured to store the S3 object-create event notifications.
