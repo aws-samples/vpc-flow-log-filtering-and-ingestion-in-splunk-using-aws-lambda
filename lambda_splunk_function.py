@@ -36,7 +36,6 @@ def send_to_splunk_hec(data_list):
     headers = {
         "Authorization": "Splunk " + splunk_hec_token
     }
-    logger.info(f"headers = {headers}")
     
     http = urllib3.PoolManager(timeout=20)
     
