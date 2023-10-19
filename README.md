@@ -146,7 +146,7 @@ Let’s create a backsplash S3 bucket to ensure that no filtered data is lost, i
 4. Keep all the other settings as default and select Create function.
 5. Once the function is created, select the Configuration tab within the function and edit the General configuration. Change the Timeout value to 5 min and click Save.
 6. Next, edit the Environment variables and add these 3 key-value pairs. Make sure that you replace the placeholders in <> with the appropriate values based on your environment. Once the environment variables are added, click Save:  
-- backup_s3 = name of the backsplash S3 bucket created in the earlier section
+- backup_s3 = backsplash Amazon S3 bucket name created in the earlier section
 - splunk_hec_token = <your_splunk_hec_token>  
 - splunk_hec_url = <your_splunk_url>:8088/services/collector/raw
 
